@@ -1,6 +1,6 @@
 import{ Router, Request, Response } from 'express';
 import { ProductController } from '../controllers/product.controller';
-import { asyncCall } from '../utils/async-call';
+import asyncCall from '../utils/async-call';
 
 export class ProductRouter {
     private controller: ProductController
