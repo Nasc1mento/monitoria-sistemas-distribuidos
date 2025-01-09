@@ -1,0 +1,24 @@
+services:
+  #https://www.mongodb.com/resources/products/compatibilities/docker
+  mongodb:
+    image: mongo
+    container_name: mongodb-rest-api-monitoria
+    ports:
+      - "27017:27017"
+    networks:
+      - api-network
+  api:
+    build:
+      context: .
+      # https://www.docker.com/blog/how-to-setup-your-local-node-js-development-environment-using-docker/
+    environment:
+      - PORT=8080
+      - MONGO_URI=mongodb://mongodb-rest-api-monitoria:27017
+    container_name: rest-api-monitoria
+    ports:
+      - "8080:8080"
+    networks:
+      - api-network
+networks:
+  api-network:
+    driver: bridge
