@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"log"
 	"math/rand"
-	"monitoria/classwork/local_socket_and_threads/util"
+	"monitoria/local_socket_and_threads/util"
 	"net"
 	"os"
 	"strings"

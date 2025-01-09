@@ -4,7 +4,7 @@ import (
 	"encoding/binary"
 	"fmt"
 	"math/rand"
-	"monitoria/class03/udp_game/util"
+	"monitoria/udp_game/util"
 	"net"
 	"time"
 )

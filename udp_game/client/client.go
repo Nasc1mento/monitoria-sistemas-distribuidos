@@ -3,7 +3,7 @@ package main
 import (
 	"encoding/binary"
 	"fmt"
-	"monitoria/class03/udp_game/util"
+	"monitoria/udp_game/util"
 	"net"
 	"os"
 	"os/exec"

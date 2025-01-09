@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"monitoria/classwork/local_socket_and_threads/util"
+	"monitoria/local_socket_and_threads/util"
 	"net"
 	"os"
 	"os/signal"

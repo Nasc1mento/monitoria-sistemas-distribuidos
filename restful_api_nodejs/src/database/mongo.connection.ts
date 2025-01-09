@@ -8,7 +8,7 @@ export class MongoConnection {
     private client: MongoClient;
 
     private constructor() {
-        this.client = new MongoClient(this.getUri())
+        this.client = new MongoClient(env.MONGO_URI)
     }
 
     public static getInstance(): MongoConnection {
@@ -16,10 +16,6 @@ export class MongoConnection {
             MongoConnection.instance = new MongoConnection()
 
         return MongoConnection.instance;
-    }
-
-    private getUri(): string {
-        return env.MONGO_URI;
     }
 
     public getClient(): MongoClient {

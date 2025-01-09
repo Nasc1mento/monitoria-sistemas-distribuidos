@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"monitoria/class03/tcp_simple_chat/util"
+	"monitoria/tcp_simple_chat/util"
 	"net"
 	"sync"
 )
