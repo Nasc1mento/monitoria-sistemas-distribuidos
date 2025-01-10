@@ -10,8 +10,6 @@ class Server {
 
     constructor() {
         this.app = express();
-        console.log(env.PORT);
-        console.log(env.MONGO_URI)
         this.db = MongoConnection.getInstance();
     }
 

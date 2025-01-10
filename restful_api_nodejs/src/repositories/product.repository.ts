@@ -15,18 +15,24 @@ export class ProductRepository {
     }
     
     async insertOne(product: Product): Promise<Product> {
-        const r = await this.collection.insertOne(
+        const p = await this.collection.insertOne(
             {
                 ...product,
                 createdAt: new Date(),
                 updatedAt: new Date(),
             });
 
-        return { ...product, _id: r.insertedId };
+        return { ...product, _id: p.insertedId };
     }
 
-    async findAll(): Promise<Product[]> {
-        return await this.collection.find().toArray();
+    // https://medium.com/swlh/mongodb-pagination-fast-consistent-ece2a97070f3
+    async findAll(lastId: string, limit: number = 20, sort: Record<string, 1 | -1> = {_id:-1}): Promise<Product[]> {
+        return await this.collection
+        .find(
+            ObjectId.isValid(lastId) ? {_id: {$gt: new ObjectId(lastId)}} : {}
+        ).limit(limit)
+        .sort(sort)
+        .toArray();
     }
 
     async findOne(id: string): Promise<Product | null> {
