@@ -16,17 +16,19 @@ func main() {
 	endpoint := util.SERVER_IP + ":" + util.SERVER_PORT
 	conn, err := net.Listen("tcp", endpoint)
 	if err != nil {
-		fmt.Print(err)
+		fmt.Printf("Erro ao inicia o servidor: %v\n", err)
 		return
 	}
 
 	defer conn.Close()
 
+	fmt.Println("Servidor iniciado")
+
 	for {
 
 		client, err := conn.Accept()
 		if err != nil {
-			fmt.Print(err)
+			fmt.Printf("Erro ao aceitar conexão: %v\n", err)
 			return
 		}
 
@@ -48,23 +50,30 @@ func chatWorker(conn net.Conn) {
 		conn.Close()
 	}()
 
+	conn.Write([]byte("Bem-vindo ao chat!"))
+	broadcast([]byte("Novo usuário conectado: " + conn.RemoteAddr().String()))
+
 	for {
 		buffer := make([]byte, util.BufferSize)
 		_, err := conn.Read(buffer)
 		if err != nil {
-			return
+			fmt.Printf("Erro ao ler mensagem: %v\n", err)
 		}
 
 		mu.Lock()
-		for client := range clients {
-			if client != conn {
-				_, err := client.Write(buffer)
-				if err != nil {
-					return
-				}
-			}
-		}
+		broadcast(buffer)
 		mu.Unlock()
 	}
 
+}
+
+func broadcast(message []byte) {
+	mu.Lock()
+	defer mu.Unlock()
+	for client := range clients {
+		_, err := client.Write(message)
+		if err != nil {
+			fmt.Printf("Erro ao enviar mensagem: %v\n", err)
+		}
+	}
 }

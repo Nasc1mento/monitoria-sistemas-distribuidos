@@ -28,9 +28,12 @@ export class ProductRepository {
     // https://medium.com/swlh/mongodb-pagination-fast-consistent-ece2a97070f3
     async findAll(lastId: string, limit: number = 20, sort: Record<string, 1 | -1> = {_id:-1}): Promise<Product[]> {
         return await this.collection
-        .find(
-            ObjectId.isValid(lastId) ? {_id: {$gt: new ObjectId(lastId)}} : {}
-        ).limit(limit)
+        .find(ObjectId.isValid(lastId) ? {
+            _id: {
+                    $gt: new ObjectId(lastId)
+                }
+            } : {})
+        .limit(limit)
         .sort(sort)
         .toArray();
     }

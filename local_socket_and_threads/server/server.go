@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/binary"
 	"fmt"
 	"monitoria/local_socket_and_threads/util"
 	"net"
@@ -68,13 +69,13 @@ func main() {
 			for {
 				buffer := make([]byte, util.BufferSize)
 
-				_, err := conn.Read(buffer)
+				n, err := conn.Read(buffer)
 				if err != nil {
 					fmt.Println(err)
 					return
 				}
 
-				fmt.Println(string(id) + ": " + string(buffer))
+				fmt.Println(binary.LittleEndian.Uint64(id[:8]), ":", string(buffer[:n]))
 			}
 
 		}(client)

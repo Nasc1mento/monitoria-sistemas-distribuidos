@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"encoding/binary"
 	"fmt"
 	"log"
 	"math/rand"
@@ -21,8 +22,7 @@ func main() {
 
 	defer conn.Close()
 
-	id := make([]byte, util.IdSize)
-	generateId(&id)
+	id := generateId()
 
 	_, err = conn.Write(id)
 	if err != nil {
@@ -45,11 +45,11 @@ func main() {
 
 }
 
-func generateId(id *[]byte) {
-	r := rand.New(rand.NewSource(time.Now().UnixNano()))
-	(*id)[0] = byte(time.Now().UnixNano())
-
-	for i := 1; i < len(*id); i++ {
-		(*id)[i] = byte(r.Intn(100))
-	}
+func generateId() []byte {
+	id := make([]byte, util.IdSize)
+	now := time.Now().UnixNano()
+	r := rand.New(rand.NewSource(now))
+	binary.LittleEndian.PutUint64(id[:8], uint64(now))
+	r.Read(id[8:util.IdSize])
+	return id
 }

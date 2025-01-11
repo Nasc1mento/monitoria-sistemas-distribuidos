@@ -14,16 +14,14 @@ func readWorker(conn net.Conn, wg *sync.WaitGroup) {
 	defer wg.Done()
 	for {
 		buffer := make([]byte, util.BufferSize)
-		_, err := conn.Read(buffer)
+		n, err := conn.Read(buffer)
 		if err != nil {
 			continue
 		}
 
 		buffer = bytes.TrimSpace(buffer)
 
-		for i := range buffer {
-			fmt.Print(string(buffer[i]))
-		}
+		fmt.Println(string(buffer[:n]))
 	}
 }
 
@@ -41,7 +39,7 @@ func writeWorker(conn net.Conn, wg *sync.WaitGroup) {
 
 		_, err = conn.Write(message)
 		if err != nil {
-			fmt.Print(err)
+			fmt.Printf("Erro ao enviar mensagem: %v\n", err)
 			return
 		}
 
@@ -53,6 +51,7 @@ func main() {
 	endpoint := util.SERVER_IP + ":" + util.SERVER_PORT
 	conn, err := net.Dial("tcp", endpoint)
 	if err != nil {
+		fmt.Printf("Erro ao conectar ao servidor: %v\n", err)
 		return
 	}
 
