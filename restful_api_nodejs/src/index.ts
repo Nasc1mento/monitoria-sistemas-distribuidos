@@ -1,7 +1,8 @@
 import express, { Express } from "express";
-import { ApiRoutes } from "./routes/routes";
-import { env } from "./env";
+import { env } from "./config/env";
 import { MongoConnection } from "./database/mongo.connection";
+import ApiRoutes from "./routes/routes";
+
 
 class Server {
     private app: Express;
@@ -43,6 +44,4 @@ class Server {
         });
     }
 }
-
-
 new Server().init()

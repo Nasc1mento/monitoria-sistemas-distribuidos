@@ -1,12 +1,16 @@
 import { Router, Request, Response } from "express";
 import { ProductRouter } from "./product.routes";
+import { AuthRoutes } from "./auth.routes";
+import { ProfileRoutes } from "./profile.routes";
 
-export class ApiRoutes {
+class ApiRoutes {
 
     private router: Router
+    private path: string;
 
     constructor() {
         this.router = Router();  
+        this.path = '/';
     }
 
     init(): Router {
@@ -16,7 +20,7 @@ export class ApiRoutes {
     }
 
     getAPIStatusRoute(): void {
-        this.router.get('/', (req: Request, res: Response) => {
+        this.router.get(this.path, (req: Request, res: Response) => {
             res.send(
                 {   
                     uptime: Math.floor(process.uptime()),
@@ -27,6 +31,10 @@ export class ApiRoutes {
     }
 
     setRoutes(): void {
+        new AuthRoutes(this.router).setRoutes();
         new ProductRouter(this.router).setRoutes();
+        new ProfileRoutes(this.router).setRoutes();
     }
 }
+
+export default ApiRoutes;
