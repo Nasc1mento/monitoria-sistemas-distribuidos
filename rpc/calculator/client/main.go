@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"net"
 	"net/rpc"
 )
 
@@ -11,27 +12,28 @@ const (
 )
 
 type Args struct {
-	A, B int
+	A, B float64
 }
 
 func main() {
-
-	conn, err := rpc.Dial("tcp", SERVER_IP+":"+SERVER_PORT)
+	conn, err := net.Dial("tcp", SERVER_IP+":"+SERVER_PORT)
 	if err != nil {
-		fmt.Printf("Erro ao conectar ao servidor: %v\n", err)
+		fmt.Printf("failed to connect to server: %v\n", err)
 		return
 	}
 
 	defer conn.Close()
 
-	var result int
-	args := Args{A: 10, B: 5}
+	client := rpc.NewClient(conn)
 
-	err = conn.Call("Calculator.Divide", args, &result)
+	var result float64
+	args := Args{A: 10, B: 20}
+
+	err = client.Call("Calculator.Divide", args, &result)
 	if err != nil {
-		fmt.Printf("Erro ao chamar o método: %v\n", err)
+		fmt.Printf("failed calling method: %v\n", err)
 		return
 	}
 
-	fmt.Printf("Resultado: %d\n", result)
+	fmt.Printf("result: %v\n", result)
 }

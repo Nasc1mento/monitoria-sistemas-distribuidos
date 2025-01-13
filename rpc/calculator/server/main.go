@@ -12,28 +12,32 @@ const (
 )
 
 type Args struct {
-	A, B int
+	A, B float64
 }
 
 type Calculator struct{}
 
-func (c *Calculator) Sum(args *Args, result *int) error {
+func (c *Calculator) Sum(args *Args, result *float64) error {
 	*result = args.A + args.B
 	return nil
 }
 
-func (c *Calculator) Divide(args *Args, result *int) error {
-	*result = args.A / args.B
+func (c *Calculator) Subtract(args *Args, result *float64) error {
+	*result = args.A - args.B
 	return nil
 }
 
-func (c *Calculator) Multiply(args *Args, result *int) error {
+func (c *Calculator) Multiply(args *Args, result *float64) error {
 	*result = args.A * args.B
 	return nil
 }
 
-func (c *Calculator) Subtract(args *Args, result *int) error {
-	*result = args.A - args.B
+func (c *Calculator) Divide(args *Args, result *float64) error {
+	if args.B == 0 {
+		return fmt.Errorf("cannot divide by zero")
+	}
+
+	*result = args.A / args.B
 	return nil
 }
 
@@ -41,14 +45,14 @@ func main() {
 	err := rpc.Register(new(Calculator))
 
 	if err != nil {
-		fmt.Printf("Erro ao registrar o serviço: %v\n", err)
+		fmt.Printf("failed to start service: %v\n", err)
 		return
 	}
 
 	endpoint := SERVER_IP + ":" + SERVER_PORT
 	conn, err := net.Listen("tcp", endpoint)
 	if err != nil {
-		fmt.Printf("Erro ao iniciar o servidor: %v\n", err)
+		fmt.Printf("failed to start server: %v\n", err)
 		return
 	}
 
@@ -57,10 +61,9 @@ func main() {
 	for {
 		client, err := conn.Accept()
 		if err != nil {
-			fmt.Printf("Erro ao aceitar conexão: %v\n", err)
+			fmt.Printf("failed to accept connection: %v\n", err)
 		}
 
 		go rpc.ServeConn(client)
 	}
-
 }
