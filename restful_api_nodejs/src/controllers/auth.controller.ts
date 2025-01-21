@@ -1,50 +1,63 @@
-import { toUserResponse, User } from "../models/user.model";
 import { Request, Response } from "express";
-import { hashPassword, comparePassword } from "../utils/hashing";
-import {StatusCode} from "../constants/status-code";
-import {AuthRepository} from "../repositories/auth.repository";
+import { StatusCode } from "../constants/status-code";
 import { generateJwtToken } from "../utils/gen-token";
+import { comparePassword, hashPassword } from "../utils/hashing";
+import { Collection, ObjectId } from "mongodb";
+import { MongoConnection } from "../database/mongo.connection";
+import { LoginDTO, toUserDTO, User } from "../models/user.model";
+import { createUserSchema } from "../schema/auth.schema";
 
 
 export class AuthController {
 
-    private repository: AuthRepository;
+    private collection: Collection<User>
 
     constructor() {
-        this.repository = new AuthRepository();
+        this.collection = MongoConnection
+        .getInstance()
+        .getClient()
+        .db("monitoria-api-restful")
+        .collection("users");
     }
 
     async login(req: Request, res: Response): Promise<Response> {
-        const user: User = req.body;
-        const userExists: User | null = await this.repository.findByEmail(user.email);
         
-        if (!userExists) {
+        const user = req.body as LoginDTO;
+        const existingUser: User | null = await this.collection.findOne({email: user.email});
+
+        if (!existingUser)
             return res.status(StatusCode.UNAUTHORIZED).send('User not found');
-        }
 
-        if (!await comparePassword(user.password, userExists.password)) {
+
+        if (!await comparePassword(user.password, existingUser.password))
             return res.status(StatusCode.UNAUTHORIZED).send('Invalid password');
-        }
 
-        const token = generateJwtToken(userExists);
-        return res.status(StatusCode.OK).json({token});
+        const token = generateJwtToken({id: existingUser._id});
+
+        return res.status(StatusCode.OK).json({
+            token,
+            user: toUserDTO(existingUser)
+        });
     }
 
     async register(req: Request, res: Response): Promise<Response> {
-        const user: User = req.body;
-        
-        if (await this.repository.findByEmail(user.email)) {
+        const {error, value: newUser} = createUserSchema.validate(req.body);
+        if (error)
+            return res.status(StatusCode.BAD_REQUEST).send(error.message);
+
+        if (await this.collection.findOne({email: newUser.email}))
             return res.status(StatusCode.CONFLICT).send('User already exists');
+
+        const hashedPassword = await hashPassword(newUser.password);
+
+        const savedUser: User = {
+            ...newUser,
+            password: hashedPassword,
+            _id: new ObjectId()
         }
 
-        const hashedPassword = await hashPassword(user.password);
-        const savedUser: User = await this.repository.register({
-            ...user,
-            password: hashedPassword,
-            createdAt: new Date(),
-            updatedAt: new Date()
-        });
+        await this.collection.insertOne(savedUser);
 
-        return res.status(StatusCode.CREATED).json(toUserResponse(savedUser));
+        return res.status(StatusCode.CREATED).json(toUserDTO(savedUser));
     }
 }

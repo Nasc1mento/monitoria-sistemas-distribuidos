@@ -1,7 +1,7 @@
-import { Router, Request, Response } from "express";
-import { ProductRouter } from "./product.routes";
-import { AuthRoutes } from "./auth.routes";
-import { ProfileRoutes } from "./profile.routes";
+import { Router, Request, Response } from 'express';
+import { ProductRouter } from './product.routes';
+import { AuthRoutes } from './auth.routes';
+import { ProfileRoutes } from './profile.routes';
 
 class ApiRoutes {
 

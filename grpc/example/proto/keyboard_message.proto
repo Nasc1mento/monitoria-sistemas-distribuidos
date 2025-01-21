@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+option go_package = "./pb";
+
+
+message Keyboard {
+    enum Layout {
+        UNKNOWN = 0;
+        QWERTY = 1;
+        DVORAK = 2;
+        COLEMAK = 3;
+        QWERTZ = 4;
+        AZERTY = 5;   
+    }
+
+    Layout layout = 1;
+    bool backlit = 2;
+}

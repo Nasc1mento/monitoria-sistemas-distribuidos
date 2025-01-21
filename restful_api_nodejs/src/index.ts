@@ -1,7 +1,7 @@
-import express, { Express } from "express";
-import { env } from "./config/env";
-import { MongoConnection } from "./database/mongo.connection";
-import ApiRoutes from "./routes/routes";
+import express, { Express } from 'express';
+import { env } from './config/env';
+import { MongoConnection } from './database/mongo.connection';
+import ApiRoutes from './routes/routes';
 
 
 class Server {
@@ -22,7 +22,7 @@ class Server {
             this.configRoutes();
             this.startServer();      
         } catch(error) {
-            console.error("Erro ao iniciar o servidor", error)
+            console.error('Erro ao iniciar o servidor', error)
         }
     }
 

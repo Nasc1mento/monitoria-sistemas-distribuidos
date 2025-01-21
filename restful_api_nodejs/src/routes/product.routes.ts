@@ -1,7 +1,7 @@
 import { Router, Request, Response } from 'express';
-import {ProductController } from '../controllers/product.controller';
-import { asyncCall } from "../utils/async-call";
-import {authMiddleware} from '../middleware/auth.middleware';
+import { ProductController } from '../controllers/product.controller';
+import { asyncCall } from '../utils/async-call';
+import { authMiddleware } from '../middleware/auth.middleware';
 
 export class ProductRouter {
     private controller: ProductController

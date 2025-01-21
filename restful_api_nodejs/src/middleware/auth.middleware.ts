@@ -14,8 +14,8 @@ export async function authMiddleware (req: Request, res: Response, next: NextFun
     }
 
     try {
-        const payload = jwt.verify(token, env.JWT_SECRET);
-        req.user = payload;
+        const decoded = jwt.verify(token, env.JWT_SECRET) as string;
+        req.user = decoded;
         next();
     } catch (error) {
         if (error instanceof jwt.JsonWebTokenError) {

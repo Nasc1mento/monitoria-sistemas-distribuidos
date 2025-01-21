@@ -1,7 +1,7 @@
-import { Request, Response, Router } from "express";
-import { authMiddleware } from "../middleware/auth.middleware";
-import { ProfileController } from "../controllers/profile.controller";
-import { asyncCall } from "../utils/async-call";
+import { Request, Response, Router } from 'express';
+import { authMiddleware } from '../middleware/auth.middleware';
+import { ProfileController } from '../controllers/profile.controller';
+import { asyncCall } from '../utils/async-call';
 
 
 export class ProfileRoutes {

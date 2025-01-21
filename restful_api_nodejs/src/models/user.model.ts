@@ -1,27 +1,26 @@
-import { ObjectId } from "mongodb";
+import Joi from 'joi';
+import { ObjectId } from 'mongodb';
+
+export type userID = ObjectId;
 
 export interface User {
-    _id: ObjectId;
+    _id: ObjectId | string;
     name: string;
     email: string;
     password: string;
-    createdAt?: Date;
-    updatedAt?: Date;
 }
 
+export type UserDTO = Omit<User, 'password'>;
+export type LoginDTO = Pick<User, 'email' | 'password'>;
+export type CreateUserDTO = Omit<User, '_id'>;
+export type UpdateUserDTO = Partial<CreateUserDTO>;
 
-export interface UserResponse {
-    _id?: ObjectId;
-    email: string;
-    createdAt?: Date;
-    updatedAt?: Date;
-}
-
-export function toUserResponse(user: User): UserResponse {
+export function toUserDTO(user: User): UserDTO {
     return {
         _id: user._id,
-        email: user.email,
-        createdAt: user.createdAt,
-        updatedAt: user.updatedAt,
+        name: user.name,
+        email: user.email
     }
 }
+
+

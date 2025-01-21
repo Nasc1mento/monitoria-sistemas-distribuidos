@@ -1,5 +1,5 @@
-import { MongoClient } from "mongodb";
-import {env} from "../config/env";
+import { MongoClient } from 'mongodb';
+import {env} from '../config/env';
 
 
 export class MongoConnection {
